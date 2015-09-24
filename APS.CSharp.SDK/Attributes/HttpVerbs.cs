@@ -1,0 +1,36 @@
+﻿namespace APS.CSharp.SDK.Attributes
+{
+    public enum HttpVerbs
+    {
+        OPTIONS,
+        GET,
+        HEAD,
+        POST,
+        PUT,
+        DELETE,
+        TRACE,
+        CONNECT,
+        PROPFIND,
+        PROPPATCH,
+        MKCOL,
+        COPY,
+        MOVE,
+        LOCK,
+        UNLOCK,
+        VERSION_CONTROL,
+        REPORT,
+        CHECKOUT,
+        CHECKIN,
+        UNCHECKOUT,
+        MKWORKSPACE,
+        UPDATE,
+        LABEL,
+        MERGE,
+        BASELINE_CONTROL,
+        MKACTIVITY,
+        ORDERPATCH,
+        ACL,
+        PATCH,
+        SEARCH
+    }
+}

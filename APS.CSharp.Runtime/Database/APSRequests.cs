@@ -16,5 +16,19 @@ namespace APS.CSharp.Runtime.Database
         public string HttpMethod { get; set; }
         public string Url { get; set; }
         public string Content{ get; set; }
+        public APSRequests() { }
+        public APSRequests(APSRequests apsRequest)
+        {
+            Id = apsRequest.Id;
+            Date = apsRequest.Date;
+            ControllerUri = apsRequest.ControllerUri;
+            Identity = apsRequest.Identity;
+            InstanceId = apsRequest.InstanceId;
+            RequestPhase = apsRequest.RequestPhase;
+            TransationId = apsRequest.TransationId;
+            HttpMethod = apsRequest.HttpMethod;
+            Url = apsRequest.Url;
+            Content = apsRequest.Content;
+        }
     }
 }

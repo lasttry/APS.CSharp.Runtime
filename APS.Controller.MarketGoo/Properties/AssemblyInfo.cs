@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("APS.Controller.MarketGoo")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("MarketGoo")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("APS.Controller.MarketGoo")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]

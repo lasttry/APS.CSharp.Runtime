@@ -36,8 +36,15 @@
     <AssemblyOriginatorKeyFile>APS.CSharp.Runtime.Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\..\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,12 +64,41 @@
     <Compile Include="Internal\APSCSharpEndpointTraceListener.cs" />
     <Compile Include="Internal\Controller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Site\Site.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="APS.CSharp.Runtime.Key.snk" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Site\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Site\CSS\normalize.css" />
+    <EmbeddedResource Include="Site\CSS\skeleton.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Site\infos.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\APS.CSharp.SDK\APS.CSharp.SDK.csproj">
+      <Project>{ce1933d7-0523-491b-bd8c-344a0321570f}</Project>
+      <Name>APS.CSharp.SDK</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Site\apsrequests.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Site\apsrequest.html" />
+    <EmbeddedResource Include="Site\requests.html" />
+    <EmbeddedResource Include="Site\request.html" />
+    <EmbeddedResource Include="Site\bindings.html" />
+    <Content Include="sqlite3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

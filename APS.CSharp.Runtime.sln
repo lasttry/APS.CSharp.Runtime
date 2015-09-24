@@ -8,7 +8,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "APS.CSharp.Site", "APS.CSharp.Site\", "{5CD097A3-E745-4DD1-AF9F-B24372BA86B8}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
-		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;"
+		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;{71ff1bba-9feb-4897-848b-91439fcff507}|APS.Controller.MarketGoo.dll;{CE1933D7-0523-491B-BD8C-344A0321570F}|APS.CSharp.SDK.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56629"
 		Debug.AspNetCompiler.PhysicalPath = "APS.CSharp.Site\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56629\"

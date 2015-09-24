@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Web;
 
 namespace APS.CSharp.Runtime
 {
@@ -33,6 +34,42 @@ namespace APS.CSharp.Runtime
         public static bool ContainsProperty(dynamic obj, string key)
         {
             return ((IDictionary<string, object>)obj).ContainsKey(key);
+        }
+
+        public static void LogRequest(HttpRequest request, string contents)
+        {
+            if (!string.IsNullOrEmpty(request.Headers["APS-Controller-URI"]))
+            {
+                APSRequest(request, contents);
+            }
+
+            DataAccess.RequestsAdd(request, contents);
+            //string query = string.Format(InsertRequest, DateTime.Now,
+            //    request.RawUrl,
+            //    request.ContentLength,
+            //    request.Headers.ToString(),
+            //    request.HttpMethod,
+            //    request.Params,
+            //    request.ServerVariables,
+            //    contents,
+            //    request.UserHostName,
+            //    request.UserHostAddress);
+            //DataAccess.ExecuteNonQuery(query);
+        }
+        public static void APSRequest(HttpRequest request, string contents)
+        {
+            DataAccess.APSRequestsAdd(
+                DateTime.Now,
+                request.Headers["APS-Controller-URI"],
+                request.Headers["APS-Identity-ID"],
+                request.Headers["APS-Instance-ID"],
+                request.Headers["APS-Request-Phase"],
+                request.Headers["APS-Transaction-ID"],
+                request.HttpMethod,
+                request.RawUrl,
+                contents
+                );
+
         }
     }
 }
