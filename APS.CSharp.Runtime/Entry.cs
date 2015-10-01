@@ -1,4 +1,5 @@
-﻿using APS.CSharp.SDK;
+﻿using APS.CSharp.Runtime.Internal;
+using APS.CSharp.SDK;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -62,7 +63,6 @@ namespace APS.CSharp.Runtime
             }
             Trace.TraceInformation("IHttpHandler.ProcessRequest.DGB-Request contents received");
             
-
             //List<string> headers = new List<string>();
             //foreach (string key in context.Request.Headers.AllKeys)
             //    headers.Add(key + "=" + context.Request.Headers[key]);
@@ -136,7 +136,8 @@ namespace APS.CSharp.Runtime
             }
 
             APSException errorDetails = null;
-            object invokeResult = Controllers.InvokeByRequest(context.Request, documentContents, out errorDetails);
+
+            object invokeResult = Controllers.ProcessIncomingRequest(context.Request, documentContents, out errorDetails);
 
             // Means that we have nothing to return and that the result was false, the result is only bool if no return to APSC
             if (invokeResult.GetType() == typeof(bool))
@@ -146,7 +147,7 @@ namespace APS.CSharp.Runtime
                 {
                     Trace.TraceWarning("IHttpHandler.ProcessRequest.DGB-If we reached this far, means we have nothing to serve.");
                     Trace.TraceError(JsonConvert.SerializeObject(errorDetails));
-                    context.Response.Write(JsonConvert.SerializeObject(errorDetails));
+                    context.Response.Write(JsonConvert.SerializeObject(new { code = errorDetails.code, message = errorDetails.message }));
                     context.Response.StatusCode = errorDetails.code;
                     context.Response.End();
                     Trace.TraceInformation("IHttpHandler.ProcessRequest.END");

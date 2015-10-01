@@ -8,7 +8,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "APS.CSharp.Site", "APS.CSharp.Site\", "{5CD097A3-E745-4DD1-AF9F-B24372BA86B8}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
-		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;{71ff1bba-9feb-4897-848b-91439fcff507}|APS.Controller.MarketGoo.dll;{CE1933D7-0523-491B-BD8C-344A0321570F}|APS.CSharp.SDK.dll;"
+		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;{71ff1bba-9feb-4897-848b-91439fcff507}|APS.Controller.MarketGoo.dll;{CE1933D7-0523-491B-BD8C-344A0321570F}|APS.CSharp.SDK.dll;{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}|APS.CSharp.Common.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56629"
 		Debug.AspNetCompiler.PhysicalPath = "APS.CSharp.Site\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56629\"
@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		APS.CSharp.Runtime.docx = APS.CSharp.Runtime.docx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.CSharp.Common", "APS.CSharp.Common\APS.CSharp.Common.csproj", "{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{CE1933D7-0523-491B-BD8C-344A0321570F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE1933D7-0523-491B-BD8C-344A0321570F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE1933D7-0523-491B-BD8C-344A0321570F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

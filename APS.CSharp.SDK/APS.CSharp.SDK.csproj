@@ -51,6 +51,7 @@
     <Compile Include="Attributes\MethodAttribute.cs" />
     <Compile Include="Attributes\ResourceBaseAttribute.cs" />
     <Compile Include="APSException.cs" />
+    <Compile Include="IAPSC.cs" />
     <Compile Include="ParamTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceBase.cs" />

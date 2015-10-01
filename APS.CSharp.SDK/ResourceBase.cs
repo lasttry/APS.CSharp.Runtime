@@ -35,10 +35,7 @@ namespace APS.CSharp.SDK
         public string Type { get; set; }
         public string Name { get; set; }
 
-        public ResourceBase()
-        {
-
-        }
+        public IAPSC APSC { get; set; }
 
         public void Call()
         {
