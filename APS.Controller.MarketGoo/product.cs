@@ -11,9 +11,23 @@ namespace APS.Controller.MarketGoo
     [ResourceBase(Id = "http://odin.com/MarketGoo/product/1.0")]
     public class product : ResourceBase
     {
+        
         public override void Provision()
         {
-            APSC.GetResources("", "aps/2/resources");
+            throw new APSAsync(202, "Accepted", 60);
+            return;
+            product p = new product();
+            APSC.ProvisionResource(p);
+
+            object j = APSC.GetResources("", "aps/2/resources");
+            applications app = APSC.GetResource<applications>("64bc432d-9007-4794-bd7c-c1a466d68ef9");
+            APSC.LinkResource("", "name", "");
+            APSC.UnlinkResource("", "name", "");
+        }
+
+        public override void ProvisionAsync()
+        {
+            //throw new APSAsync(202, "Accepted", 60);
         }
     }
 }

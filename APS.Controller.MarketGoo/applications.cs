@@ -1,13 +1,15 @@
 ﻿using APS.CSharp.SDK;
 using APS.CSharp.SDK.Attributes;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace APS.Controller.MarketGoo
 {
     [ResourceBase(Id = "http://odin.com/MarketGoo/application/1.0")]
     public class applications : APS.CSharp.SDK.Application
     {
-        [Method(Verb = HttpVerbs.GET, Path = "/checkConnection")]
+        [Operation(Verb = HttpMethod.Get, Path = "/checkConnection")]
         [Param(Name = "host", Source = ParamSource.Query, Type = typeof(string))]
         [Param(Name = "xauthtoken", Source = ParamSource.Query, Type = typeof(string))]
         public int checkConnection(string host, string xauthtoken)
@@ -15,7 +17,7 @@ namespace APS.Controller.MarketGoo
             return 0;
         }
 
-        [Method(Verb = HttpVerbs.GET, Path = "/getDescription")]
+        [Operation(Verb = HttpMethod.Get, Path = "/getDescription")]
         [Param(Name = "name", Source = ParamSource.Query, Type = typeof(string))]
         [Param(Name = "language", Source = ParamSource.Query, Type = typeof(string))]
         public string getDescription(string name, string language)
@@ -23,23 +25,24 @@ namespace APS.Controller.MarketGoo
             return "Description";
         }
 
-        [Method(Verb = HttpVerbs.GET, Path = "/retrieveDescriptions")]
+        [Operation(Verb = HttpMethod.Get, Path = "/retrieveDescriptions")]
         public string retrieveDescriptions()
         {
             return "";
         }
 
-        [Method(Verb = HttpVerbs.PUT, Path = "/setDescriptions")]
+        [Operation(Verb = HttpMethod.Put, Path = "/setDescriptions")]
         [Param(Name= "descriptions", Source =ParamSource.Body, Type =typeof(string))]
         public object setDescriptions(string descriptions)
         {
             return descriptions;
         }
-
+        
         public string BrandedName { get; set; }
         public string Host { get; set; }
         public string XAuthToken { get; set; }
 
-        
+        [Link]
+        public List<product> product { get; set; }
     }
 }

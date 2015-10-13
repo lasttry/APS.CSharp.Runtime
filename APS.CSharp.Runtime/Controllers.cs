@@ -117,44 +117,26 @@ namespace APS.CSharp.Runtime
         /// <param name="urlSegments">from request.Url.Segments</param>
         /// <param name="parentResource">If contains a parent resource</param>
         /// <returns></returns>
-        public static string GetActionName(string[] urlSegments, out string parentResource)
+        public static string GetResourceName(string[] urlSegments, out string actionOrLink)
         {
-            // /application/{id}/resource
-            parentResource = null;
-            string resourceOrFunction = null;
-            //string id = null;
-            // we shall iterate throught all the segments of the URL to understand what to do!
-            for(int segment = 2;segment< urlSegments.Length; segment++)
-            {
-                
-                if (parentResource == null)
-                    // means this is the first segment we are checking
-                    parentResource = urlSegments[segment].Trim('/');
-                else if(resourceOrFunction == null)
-                    // means we already have a parent Resource and we are going to perform actions on the child resource or function
-                    resourceOrFunction = urlSegments[segment].Trim('/');
-                else
-                {
-                    // means we need to go deeper into the resources, this should only happen when we have such thing like /application/{guid}/product/{guid}/resource
-                    parentResource = resourceOrFunction;
-                    resourceOrFunction = urlSegments[segment].Trim('/');
-                }
-                // this means we probably have some ID after the name of the resource
-                if (urlSegments.Length > segment + 1)
-                {
-                    Guid g;
-                    if(Guid.TryParse(urlSegments[segment + 1].Trim('/'), out g))
-                        // it's actual a GUID so we should ignore it, since we will receive this guid in the content and set it up in the resource.
-                        segment++;
-                }
-            }
-            // means that we only have one resource to work with, so parentResource should be sent null.
-            if (resourceOrFunction == null)
-            {
-                resourceOrFunction = parentResource;
-                parentResource = null;
-            }
-            return resourceOrFunction;
+            actionOrLink = null;
+            if (urlSegments.Length < 2)
+                // url segments must always be greater than 2
+                throw new Exception(string.Format("Invalid Url passed. Application can't proceed ('{0}')", string.Join("", urlSegments)));
+            // http://doc.apsstandard.org/2.1/spec/api/application/endpoint/#spec-api-app-endpoint
+            // first segment is always the service id, except if we are upgrading the application
+            string resourceName = urlSegments[2].Trim('/');
+            if (urlSegments.Length < 4)
+                return resourceName;
+            // second segment is always the resource id
+            Guid g;
+            if (!Guid.TryParse(urlSegments[3].Trim('/'), out g))
+                throw new Exception(string.Format("Invalid UUID in the request to the endpoint ('{0}')", string.Join("", urlSegments)));
+
+            if (urlSegments.Length > 4)
+                // we have a custom action or a link to perform
+                actionOrLink = urlSegments[4];
+            return resourceName;
         }
 
 
@@ -166,7 +148,7 @@ namespace APS.CSharp.Runtime
             {
                 currentType = controller.Assembly.GetTypes().Single(t => t.Name == name);
                 // checking if the aps type defined in POA is the same as in the class
-                if (expectedType.ToLowerInvariant() != currentType.GetCustomAttribute<ResourceBaseAttribute>().Id.ToLowerInvariant())
+                if (!string.IsNullOrEmpty(expectedType) && expectedType.ToLowerInvariant() != currentType.GetCustomAttribute<ResourceBaseAttribute>().Id.ToLowerInvariant())
                 {
                     throw new APSException(500, "The type expected by Operations Automation is '{0}' is not the same as provided '{1}' by class '{2}'.", expectedType, currentType.GetCustomAttribute<ResourceBaseAttribute>().Id, name);
                 }
@@ -178,18 +160,21 @@ namespace APS.CSharp.Runtime
             return currentType;
         }
 
-        public static object ProcessIncomingRequest(HttpRequest request, string documentContents, out APSException exception)
+        public static object ProcessIncomingRequest(HttpRequest request, string documentContents, out object exception)
         {
             exception = new APSException();
 
-            string parentResource = null;
+            string actionOrLink = null;
             // let's get what resource we are going to work on.
-            string functionOrResource = GetActionName(request.Url.Segments, out parentResource);
+            string resourceName = GetResourceName(request.Url.Segments, out actionOrLink);
 
             Controller currentController = CurrentController(request);
             Type currentType = null;
             object instanciatedType = null;
+            // used to save the custom Method
             MethodInfo currentMethod = null;
+            // used to save the custom link
+            PropertyInfo currentProperty = null;
 
             dynamic contents = null;
             if (request.ContentType == "application/json" && !string.IsNullOrEmpty(documentContents))
@@ -198,64 +183,32 @@ namespace APS.CSharp.Runtime
                 contents = JObject.Parse(documentContents);
             }
 
-            if (parentResource == null)
+            try
             {
-                // Means that the work will be done in a resource
-                try
-                {
-                    currentType = GetResourceByType(currentController, functionOrResource, ((string)contents.aps.type));
-                }
-                catch (Exception e)
-                {
-                    exception = new APSException(500, e.Message);
-                    return false;
-                }
+                // let's get the type of the resource we are going to work with.
+                string apsExpectedType = "";
+                if (string.IsNullOrEmpty(actionOrLink))
+                    apsExpectedType = contents.aps.type;
+                currentType = GetResourceByType(currentController, resourceName, apsExpectedType);
             }
-            else
+            catch (Exception e)
             {
-                // we need to determ if we are going to use a method or a resource.
-
-                // first lets get the parent resource, either method or resource has a parent resource.
-                Type parentType = null;
-                try { parentType = currentController.Assembly.GetTypes().Single(t => t.Name == parentResource); }
-                catch (InvalidOperationException)
+                exception = new APSException(500, e.Message);
+                return false;
+            }
+            if(!String.IsNullOrEmpty(actionOrLink))
+            {
+                // We need to determin if we are performing a link or a custom method
+                
+                currentProperty = currentType.GetProperty(actionOrLink);
+                if(currentProperty == null)
+                    // we are working with a custom method.
+                    currentMethod = currentType.GetMethod(actionOrLink);
+                if (currentMethod == null)
                 {
-                    exception = new APSException(500, "The parent resource type '{0}' of the method/resource doesn't exist.", functionOrResource);
-                    return false;
-                }
-
-                bool tryMethod = false;
-                try
-                {
-                    // try to get the resource using the received parameters.
-                    currentType = GetResourceByType(currentController, functionOrResource, ((string)contents.aps.type));
-                }
-                catch(APSException apse) {
-                    exception = apse;
-                    return false;
-                }
-                catch(Exception e)
-                {
-                    // means that something failed, it should mean that POA is calling some custom method
-                    Trace.TraceWarning(e.Message + e.StackTrace);
-                    tryMethod = true;
-                }
-                if (tryMethod)
-                {
-                    // try to get the method to call, if this fail we don't know what to do, so error is returned
-                    try
-                    {
-                        // trying to get the method
-                        currentMethod = parentType.GetMethod(functionOrResource);
-                        // setting the work object of type to the parent.
-                        currentType = parentType;
-                    }
-                    catch
-                    {
-                        // we don't know what to do, so we just reply with error
-                        exception = new APSException(500, "Couldn't determine the operation to perform when calling path: " + request.Url + ". Class or Custom Method is missing.");
-                        return false;
-                    }
+                    // current controller doesn't implement this action log and return true
+                    Trace.TraceWarning("Controller doesn't implment any action ('{0}')", request.RawUrl);
+                    return true;
                 }
             }
             // let's create the instance of our object to work with
@@ -264,13 +217,20 @@ namespace APS.CSharp.Runtime
             else
                 instanciatedType = Activator.CreateInstance(currentType);
             //We need to set the controller to the resource
-            APSC apsc = new APSC();
+            APSC apsc = new APSC(request);
             // set the instanceid so we can call back to the APSC
             apsc.InstanceId = (string)request.Headers["APS-Instance-ID"];
             currentType.GetProperty("APSC").SetValue(instanciatedType, apsc);
 
+            // we are performing a link.
+            if(currentProperty != null)
+            {
+                object currentResource = Activator.CreateInstance(currentType);
+                currentProperty.SetValue(instanciatedType, currentResource);
+                return true;
+            }
             // currentMethod is initialized, so POA is calling the custom method.
-            if (currentMethod != null)
+            else if (currentMethod != null)
             {
                 try { return CallCustomMethod(currentType, request, instanciatedType, documentContents); }
                 catch (Exception ex)
@@ -287,7 +247,11 @@ namespace APS.CSharp.Runtime
                     switch (request.HttpMethod)
                     {
                         case "POST":
-                            methodName = "Provision";
+                            if (request.Headers.AllKeys.Contains<string>("APS-Request-Phase") &&
+                                request.Headers["APS-Request-Phase"] == "async")
+                                methodName = "ProvisionAsync";
+                            else
+                                methodName = "Provision";
                             break;
                         case "DELETE":
                             methodName = "Unprovision";
@@ -311,7 +275,11 @@ namespace APS.CSharp.Runtime
                     if (e.InnerException.GetType() == typeof(APSException))
                     {
                         exception = (APSException)e.InnerException;
-                        exception.message = failedMessage + exception.message; 
+                        ((APSException)exception).message = failedMessage + ((APSException)exception).message; 
+                    }
+                    else if(e.InnerException.GetType() == typeof(APSAsync))
+                    {
+                        exception = (APSAsync)e.InnerException;
                     }
                     else
                         exception = new APSException(500, failedMessage + e.InnerException.Message);
@@ -328,9 +296,9 @@ namespace APS.CSharp.Runtime
             MethodInfo[] customMethods = currentType.
                 GetMethods().
                 // The method must contain the MethodAttribute
-                Where(m => m.GetCustomAttributes<MethodAttribute>(false).Count() > 0).
+                Where(m => m.GetCustomAttributes<OperationAttribute>(false).Count() > 0).
                 // The method path property must be the same as the requested custom method name
-                Where(n => ((MethodAttribute)n.GetCustomAttribute<MethodAttribute>()).Path.ToLower() == "/" + customMethodName).
+                Where(n => ((OperationAttribute)n.GetCustomAttribute<OperationAttribute>()).Path.ToLower() == "/" + customMethodName).
                 // Just to make sure we get them all.
                 ToArray();
             if (customMethods.Length == 0)
@@ -340,7 +308,7 @@ namespace APS.CSharp.Runtime
             foreach (MethodInfo customMethod in customMethods)
             {
                 // Let's get the Method attribute
-                MethodAttribute customMethodAttrib = customMethod.GetCustomAttribute<MethodAttribute>(false);
+                OperationAttribute customMethodAttrib = customMethod.GetCustomAttribute<OperationAttribute>(false);
                 if (customMethodAttrib == null || customMethodAttrib.Path.ToLower() != "/" + customMethodName.ToLower())
                     continue;
                 if (customMethodAttrib.Verb.ToString() == request.HttpMethod)

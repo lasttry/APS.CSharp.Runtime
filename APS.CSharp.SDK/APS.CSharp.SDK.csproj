@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Attributes\HttpVerbs.cs" />
-    <Compile Include="Attributes\MethodAttribute.cs" />
+    <Compile Include="Attributes\LinkAttribute.cs" />
+    <Compile Include="Attributes\OperationAttribute.cs" />
+    <Compile Include="Attributes\PropertyAttribute.cs" />
     <Compile Include="Attributes\ResourceBaseAttribute.cs" />
     <Compile Include="APSException.cs" />
     <Compile Include="IAPSC.cs" />

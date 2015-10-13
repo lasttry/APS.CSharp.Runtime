@@ -1,9 +1,11 @@
-﻿using System;
+﻿using APS.CSharp.SDK.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace APS.CSharp.SDK
 {
@@ -28,12 +30,14 @@ namespace APS.CSharp.SDK
     /// </summary>
     public class ResourceBase
     {
+        public ResourceBase()
+        {
+            APS = new APS();
+            APS.Type = this.GetType().GetCustomAttribute<ResourceBaseAttribute>().Id;
+            APS.Modified = DateTime.Now;
+
+        }
         public APS APS { get; set; }
-        public object OriginalResource { get; set; }
-        public string InstanceId { get; set; }
-        public string Id { get; set; }
-        public string Type { get; set; }
-        public string Name { get; set; }
 
         public IAPSC APSC { get; set; }
 
@@ -84,6 +88,7 @@ namespace APS.CSharp.SDK
         
         public virtual void Retrieve() { }
         public virtual void Provision() { }
+        public virtual void ProvisionAsync() { }
         public virtual void Configure() { }
         public virtual void Unprovision() { }
 
@@ -97,9 +102,5 @@ namespace APS.CSharp.SDK
             throw new NotImplementedException();
         }
 
-        public override string ToString()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

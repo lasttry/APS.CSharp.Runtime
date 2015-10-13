@@ -76,7 +76,7 @@
     <Compile Include="SQLiteAsync.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="Site\app.config" />
     <None Include="APS.CSharp.Runtime.Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>

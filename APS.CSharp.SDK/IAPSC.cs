@@ -166,6 +166,8 @@ namespace APS.CSharp.SDK
         /// <returns></returns>
         ResourceBase GetResource(string id);
 
+        T GetResource<T>(string id);
+
         /// <summary>
         /// returns an array of all resources registered on the APS controller
         /// <see cref="https://doc.apsstandard.org/2.1/spec/api/resources/get/#spec-api-resource-list"/> more info here
@@ -173,6 +175,6 @@ namespace APS.CSharp.SDK
         /// <param name="rqlFilter"></param>
         /// <param name="path"></param>
         /// <returns></returns>
-        List<ResourceBase> GetResources(string rqlFilter, string path);
+        object GetResources(string rqlFilter, string path);
     }
 }

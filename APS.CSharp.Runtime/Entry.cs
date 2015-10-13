@@ -135,7 +135,7 @@ namespace APS.CSharp.Runtime
                 }
             }
 
-            APSException errorDetails = null;
+            object errorDetails = null;
 
             object invokeResult = Controllers.ProcessIncomingRequest(context.Request, documentContents, out errorDetails);
 
@@ -147,8 +147,18 @@ namespace APS.CSharp.Runtime
                 {
                     Trace.TraceWarning("IHttpHandler.ProcessRequest.DGB-If we reached this far, means we have nothing to serve.");
                     Trace.TraceError(JsonConvert.SerializeObject(errorDetails));
-                    context.Response.Write(JsonConvert.SerializeObject(new { code = errorDetails.code, message = errorDetails.message }));
-                    context.Response.StatusCode = errorDetails.code;
+                    if(errorDetails.GetType() == typeof(APSAsync))
+                    {
+                        //context.Response.Headers.Add("APS-Transaction-ID", context.Request.Headers["APS-Transaction-ID"]);
+                        context.Response.Headers.Add("APS-Retry-Timeout", ((APSAsync)errorDetails).timeout.ToString());
+                        context.Response.Headers.Add("APS-Info", ((APSAsync)errorDetails).message);
+                        //context.Response.Write(((APSAsync)errorDetails).message);
+                        //context.Response.ContentType = "text/html";
+
+                    }
+                    else
+                        context.Response.Write(JsonConvert.SerializeObject(new { code = ((APSException)errorDetails).code, message = ((APSException)errorDetails).message }));
+                    context.Response.StatusCode = ((APSException)errorDetails).code;
                     context.Response.End();
                     Trace.TraceInformation("IHttpHandler.ProcessRequest.END");
                     return;

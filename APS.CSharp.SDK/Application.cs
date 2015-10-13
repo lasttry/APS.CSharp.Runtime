@@ -10,7 +10,7 @@ namespace APS.CSharp.SDK
     [ResourceBase(Id = "http://aps-standard.org/types/core/application/1.0")]
     public class Application : ResourceBase
     {
-
+        
 
     }
 }

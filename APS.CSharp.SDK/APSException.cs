@@ -2,15 +2,23 @@
 
 namespace APS.CSharp.SDK
 {
+
+    public class APSAsync : APSException
+    {
+        public APSAsync(int code, string message, int _timeout) : base(code, message)
+        {
+            timeout = _timeout;
+        }
+        public int timeout { get; set; }
+    }
     
     public class APSException : Exception
     {
-        public int code
-        {
-            get;
-            set;
-        }
+        public int code { get; set; }
         public string message { get; set; }
+        public string error { get; set; }
+        public string details { get; set; }
+        public string additionalInfo { get; set; }
         public override string Message
         {
             get { return message; }

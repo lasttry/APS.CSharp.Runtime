@@ -1,4 +1,6 @@
-﻿using System;
+﻿using APS.CSharp.SDK;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -8,6 +10,24 @@ namespace APS.CSharp.Runtime
 {
     public class Helper
     {
+        public static string Resource2Json(ResourceBase resource)
+        {
+            return JsonConvert.SerializeObject(resource);
+        }
+
+        /// <summary>
+        /// Combines multiple virtual paths in one single string.
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        public static string CombinePath(params string[] paths)
+        {
+            string result = "";
+            foreach (string path in paths)
+                result = VirtualPathUtility.Combine(result, path);
+            return result;
+        }
+
         /// <summary>
         /// Retrieves one Embedded Resource from the current dll.
         /// </summary>
