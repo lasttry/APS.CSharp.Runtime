@@ -70,10 +70,13 @@
     <Compile Include="Internal\APSCSharpEndpointTraceListener.cs" />
     <Compile Include="Internal\APSExceptionContractResolver.cs" />
     <Compile Include="Internal\Controller.cs" />
+    <Compile Include="Internal\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site\Site.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="VirtualPath\APSCSharpVirtualFile.cs" />
+    <Compile Include="VirtualPath\APSCSharpVirtualPathProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Site\app.config" />

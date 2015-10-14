@@ -47,12 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="Attributes\HttpVerbs.cs" />
+    <Compile Include="Attributes\AccessAttribute.cs" />
     <Compile Include="Attributes\LinkAttribute.cs" />
     <Compile Include="Attributes\OperationAttribute.cs" />
+    <Compile Include="Attributes\ParamAttribute.cs" />
     <Compile Include="Attributes\PropertyAttribute.cs" />
     <Compile Include="Attributes\ResourceBaseAttribute.cs" />
     <Compile Include="APSException.cs" />
+    <Compile Include="Attributes\StrutureAttribute.cs" />
+    <Compile Include="HttpVerbs.cs" />
     <Compile Include="IAPSC.cs" />
     <Compile Include="ParamTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

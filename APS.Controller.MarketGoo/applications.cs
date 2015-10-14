@@ -9,7 +9,7 @@ namespace APS.Controller.MarketGoo
     [ResourceBase(Id = "http://odin.com/MarketGoo/application/1.0")]
     public class applications : APS.CSharp.SDK.Application
     {
-        [Operation(Verb = HttpMethod.Get, Path = "/checkConnection")]
+        [Operation(Verb = HttpVerbs.GET, Path = "/checkConnection")]
         [Param(Name = "host", Source = ParamSource.Query, Type = typeof(string))]
         [Param(Name = "xauthtoken", Source = ParamSource.Query, Type = typeof(string))]
         public int checkConnection(string host, string xauthtoken)
@@ -17,7 +17,7 @@ namespace APS.Controller.MarketGoo
             return 0;
         }
 
-        [Operation(Verb = HttpMethod.Get, Path = "/getDescription")]
+        [Operation(Verb = HttpVerbs.GET, Path = "/getDescription")]
         [Param(Name = "name", Source = ParamSource.Query, Type = typeof(string))]
         [Param(Name = "language", Source = ParamSource.Query, Type = typeof(string))]
         public string getDescription(string name, string language)
@@ -25,13 +25,13 @@ namespace APS.Controller.MarketGoo
             return "Description";
         }
 
-        [Operation(Verb = HttpMethod.Get, Path = "/retrieveDescriptions")]
+        [Operation(Verb = HttpVerbs.GET, Path = "/retrieveDescriptions")]
         public string retrieveDescriptions()
         {
             return "";
         }
 
-        [Operation(Verb = HttpMethod.Put, Path = "/setDescriptions")]
+        [Operation(Verb = HttpVerbs.PUT, Path = "/setDescriptions")]
         [Param(Name= "descriptions", Source =ParamSource.Body, Type =typeof(string))]
         public object setDescriptions(string descriptions)
         {

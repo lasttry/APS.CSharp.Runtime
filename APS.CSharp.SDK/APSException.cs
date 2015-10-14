@@ -14,33 +14,23 @@ namespace APS.CSharp.SDK
     
     public class APSException : Exception
     {
-        public int code { get; set; }
-        public string message { get; set; }
-        public string error { get; set; }
-        public string details { get; set; }
-        public string additionalInfo { get; set; }
-        public override string Message
+        public int Code { get; set; }
+        public string Error { get; set; }
+        public string Details { get; set; }
+        public string AdditionalInfo { get; set; }
+
+        public APSException(string message): base(message)
         {
-            get { return message; }
+            Code = 500;
+        }
+        public APSException(int code, string message) : base(message)
+        {
+            Code = code;
         }
 
-        public APSException(string _message)
+        public APSException(int code, string message, params string[] args) : base(string.Format(message, args))
         {
-            message = _message;
+            Code = code;
         }
-
-        public APSException(int _code, string _format, params string[] arg)
-        {
-            code = _code;
-            message = string.Format(_format, arg);
-        }
-
-        public APSException(int _code, string _message)
-        {
-            code = _code;
-            message = _message;
-        }
-
-        public APSException() { }
     }
 }
