@@ -149,16 +149,14 @@ namespace APS.CSharp.Runtime
                     Trace.TraceError(JsonConvert.SerializeObject(errorDetails));
                     if(errorDetails.GetType() == typeof(APSAsync))
                     {
-                        //context.Response.Headers.Add("APS-Transaction-ID", context.Request.Headers["APS-Transaction-ID"]);
+                        // Let's set the headers for the async provisioning back to the APSC
                         context.Response.Headers.Add("APS-Retry-Timeout", ((APSAsync)errorDetails).timeout.ToString());
-                        context.Response.Headers.Add("APS-Info", ((APSAsync)errorDetails).message);
-                        //context.Response.Write(((APSAsync)errorDetails).message);
-                        //context.Response.ContentType = "text/html";
-
+                        context.Response.Headers.Add("APS-Info", ((APSAsync)errorDetails).Message);
                     }
                     else
-                        context.Response.Write(JsonConvert.SerializeObject(new { code = ((APSException)errorDetails).code, message = ((APSException)errorDetails).message }));
-                    context.Response.StatusCode = ((APSException)errorDetails).code;
+                        // We rely on the Serialization class to convert the APSException in somthing that the APSC will understand.
+                        context.Response.Write(Serialization.SerializeAPSException((APSException)errorDetails));
+                    context.Response.StatusCode = ((APSException)errorDetails).Code;
                     context.Response.End();
                     Trace.TraceInformation("IHttpHandler.ProcessRequest.END");
                     return;

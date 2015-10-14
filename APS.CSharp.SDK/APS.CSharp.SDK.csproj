@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="APSCHeaderscs.cs" />
     <Compile Include="Attributes\AccessAttribute.cs" />
     <Compile Include="Attributes\LinkAttribute.cs" />
     <Compile Include="Attributes\OperationAttribute.cs" />

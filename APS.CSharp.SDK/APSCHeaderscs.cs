@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace APS.CSharp.SDK
+{
+    public class APSCHeaderscs
+    {
+        public const string APSRequestPhase = "APS-Request-Phase";
+    }
+}

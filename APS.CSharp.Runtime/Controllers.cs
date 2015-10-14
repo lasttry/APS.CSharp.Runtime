@@ -201,9 +201,16 @@ namespace APS.CSharp.Runtime
                 // We need to determin if we are performing a link or a custom method
                 
                 currentProperty = currentType.GetProperty(actionOrLink);
-                if(currentProperty == null)
+                if (currentProperty == null)
+                {
                     // we are working with a custom method.
+                    // new versions can contain async custom methods
+                    // so we need to check before checking the name.
+                    if (request.Headers.AllKeys.Contains<string>(APSCHeaderscs.APSRequestPhase) && request.Headers[APSCHeaderscs.APSRequestPhase] == "async")
+                        actionOrLink = actionOrLink + "Async";
+
                     currentMethod = currentType.GetMethod(actionOrLink);
+                }
                 if (currentMethod == null)
                 {
                     // current controller doesn't implement this action log and return true
@@ -247,11 +254,7 @@ namespace APS.CSharp.Runtime
                     switch (request.HttpMethod)
                     {
                         case "POST":
-                            if (request.Headers.AllKeys.Contains<string>("APS-Request-Phase") &&
-                                request.Headers["APS-Request-Phase"] == "async")
-                                methodName = "ProvisionAsync";
-                            else
-                                methodName = "Provision";
+                            methodName = "Provision";
                             break;
                         case "DELETE":
                             methodName = "Unprovision";
@@ -265,6 +268,12 @@ namespace APS.CSharp.Runtime
                         default:
                             break;
                     }
+                    // since we will have more methods that can be async we need to take care of it
+                    // instead of harcoding the Async only for the provision we will asume that all can be async, so when the new async
+                    // methods will arrive the Runtime is already prepared for it.
+                    if (request.Headers.AllKeys.Contains<string>(APSCHeaderscs.APSRequestPhase) && request.Headers[APSCHeaderscs.APSRequestPhase] == "async")
+                        methodName = method + "Async";
+
                     method = currentType.GetMethod(methodName);
                     if(method != null)
                         method.Invoke(instanciatedType, null);
@@ -275,7 +284,7 @@ namespace APS.CSharp.Runtime
                     if (e.InnerException.GetType() == typeof(APSException))
                     {
                         exception = (APSException)e.InnerException;
-                        ((APSException)exception).message = failedMessage + ((APSException)exception).message; 
+                        ((APSException)exception).Message = failedMessage + ((APSException)exception).Message; 
                     }
                     else if(e.InnerException.GetType() == typeof(APSAsync))
                     {
