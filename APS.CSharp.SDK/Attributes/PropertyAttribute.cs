@@ -26,6 +26,7 @@ namespace APS.CSharp.SDK.Attributes
         List<string> _enum = null;
         List<string> _enumTitles = null;
 
+
         /// <summary>
         /// description is a string containing a full description of the resource property.
         /// </summary>
@@ -116,6 +117,8 @@ namespace APS.CSharp.SDK.Attributes
         /// enumTitles is an array of strings that provides short description of each possible value of the resource property.
         /// </summary>
         public List<string> EnumTitles { get { return _enumTitles; } set { _enumTitles = value; } }
+
+         
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using APS.CSharp.Runtime.Internal;
 using APS.CSharp.SDK;
 using APS.CSharp.SDK.Attributes;
+using APS.CSharp.SDK.Types.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -60,7 +61,7 @@ namespace APS.CSharp.Runtime
         public static List<string> GetApplications(Assembly assembly)
         {
             var types = from type in assembly.GetTypes()
-                        where typeof(SDK.Application).IsAssignableFrom(type)
+                        where typeof(Application).IsAssignableFrom(type)
                         select type;
             List<string> classes = new List<string>();
             foreach (Type t in types)
@@ -206,7 +207,7 @@ namespace APS.CSharp.Runtime
                     // we are working with a custom method.
                     // new versions can contain async custom methods
                     // so we need to check before checking the name.
-                    if (request.Headers.AllKeys.Contains<string>(APSCHeaderscs.APSRequestPhase) && request.Headers[APSCHeaderscs.APSRequestPhase] == "async")
+                    if (request.Headers.AllKeys.Contains<string>(APSCHeaders.APSRequestPhase) && request.Headers[APSCHeaders.APSRequestPhase] == "async")
                         actionOrLink = actionOrLink + "Async";
 
                     currentMethod = currentType.GetMethod(actionOrLink);
@@ -227,7 +228,7 @@ namespace APS.CSharp.Runtime
             APSC apsc = new APSC(request);
             // set the instanceid so we can call back to the APSC
             apsc.InstanceId = (string)request.Headers["APS-Instance-ID"];
-            currentType.GetProperty("APSC").SetValue(instanciatedType, apsc);
+            //currentType.GetProperty("APSC").SetValue(instanciatedType, apsc);
 
             // we are performing a link.
             if(currentProperty != null)
@@ -271,7 +272,7 @@ namespace APS.CSharp.Runtime
                     // since we will have more methods that can be async we need to take care of it
                     // instead of harcoding the Async only for the provision we will asume that all can be async, so when the new async
                     // methods will arrive the Runtime is already prepared for it.
-                    if (request.Headers.AllKeys.Contains<string>(APSCHeaderscs.APSRequestPhase) && request.Headers[APSCHeaderscs.APSRequestPhase] == "async")
+                    if (request.Headers.AllKeys.Contains<string>(APSCHeaders.APSRequestPhase) && request.Headers[APSCHeaders.APSRequestPhase] == "async")
                         methodName = method + "Async";
 
                     method = currentType.GetMethod(methodName);
@@ -283,9 +284,10 @@ namespace APS.CSharp.Runtime
                     string failedMessage = string.Format("Failed to invoke method '{0}' for class '{1}.{2}', with message: ", methodName, currentType.Namespace, currentType.Name);
                     if (e.InnerException.GetType() == typeof(APSException))
                     {
-                        exception = (APSException)e.InnerException;
-                        ((APSException)exception).Message = failedMessage + ((APSException)exception).Message; 
+                        exception = new APSException(failedMessage + e.Message, (APSException)e.InnerException);
                     }
+                    // this means we are going do to async operations
+                    // this is not really one exception but we need to handle it.
                     else if(e.InnerException.GetType() == typeof(APSAsync))
                     {
                         exception = (APSAsync)e.InnerException;
@@ -335,13 +337,13 @@ namespace APS.CSharp.Runtime
 
                     // Setting the values of the parameters into the right order for the method.
                     foreach (ParamAttribute paramAttrib in customMethod.GetCustomAttributes<ParamAttribute>())
-                        if (paramAttrib.Source == ParamSource.Query)
+                        if (paramAttrib.Kind == ParamSource.Query)
                         {
                             if (!parameters.ContainsKey(paramAttrib.Name))
                                 throw new Exception(string.Format("No input parameter with the name {0} was received to perform the request.", paramAttrib.Name));
                             parametersInput.Add(parameters[paramAttrib.Name]);
                         }
-                        else if (paramAttrib.Source == ParamSource.Body)
+                        else if (paramAttrib.Kind == ParamSource.Body)
                             parametersInput.Add(documentContents);
 
                     // if we have no parametersInput means that the method doesn't accept any parameters, so we should send null.

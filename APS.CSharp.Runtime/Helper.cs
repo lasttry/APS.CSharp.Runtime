@@ -10,22 +10,24 @@ namespace APS.CSharp.Runtime
 {
     public class Helper
     {
-        public static string Resource2Json(ResourceBase resource)
+        public static object GetClassByType(string type)
         {
-            return JsonConvert.SerializeObject(resource);
+            // let's check if the type is a core type
+            //Assembly sdk = APS.CSharp.SDK.APSCPaths.ApplicationPath.GetType().Assembly;
+            //foreach(Type t in sdk.GetTypes())
+            //    if(t.GetCustomAttribute<APS.CSharp.SDK.Attributes.ResourceBaseAttribute>().TypeId)
+
+            //List<Assembly> allAssemblies = new List<Assembly>();
+            //string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            //foreach (string dll in Directory.GetFiles(path, "APS.Controller.*.dll"))
+            //    allAssemblies.Add(Assembly.LoadFile(dll));
+            return null;
         }
 
-        /// <summary>
-        /// Combines multiple virtual paths in one single string.
-        /// </summary>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        public static string CombinePath(params string[] paths)
+        public static string Resource2Json<T>(T resource)
         {
-            string result = "";
-            foreach (string path in paths)
-                result = VirtualPathUtility.Combine(result, path);
-            return result;
+            return JsonConvert.SerializeObject(resource);
         }
 
         /// <summary>

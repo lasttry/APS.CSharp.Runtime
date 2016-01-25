@@ -40,15 +40,86 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="applications.cs" />
+    <Compile Include="applications.cs">
+      <Generator>APSSchemaGenerator</Generator>
+    </Compile>
     <Compile Include="product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\Core\Account.cs" />
+    <Compile Include="Types\Core\Address.cs" />
+    <Compile Include="Types\Core\AdminUser.cs" />
+    <Compile Include="Types\Core\Application.cs" />
+    <Compile Include="Types\Core\Backupable.cs" />
+    <Compile Include="Types\Core\Brand.cs" />
+    <Compile Include="Types\Core\BrandConfiguration.cs" />
+    <Compile Include="Types\Core\Contact.cs" />
+    <Compile Include="Types\Core\Counter.cs" />
+    <Compile Include="Types\Core\License.cs" />
+    <Compile Include="Types\Core\Limit.cs" />
+    <Compile Include="Types\Core\MigrationPreCheckResult.cs" />
+    <Compile Include="Types\Core\MigrationSet.cs" />
+    <Compile Include="Types\Core\Notification.cs" />
+    <Compile Include="Types\Core\NotificationSource.cs" />
+    <Compile Include="Types\Core\Resource.cs" />
+    <Compile Include="Types\Core\ServiceUser.cs" />
+    <Compile Include="Types\Core\Subscription.cs" />
+    <Compile Include="Types\Core\SubscriptionMigratable.cs" />
+    <Compile Include="Types\Core\SubscriptionResource.cs" />
+    <Compile Include="Types\Core\SubscriptionService.cs" />
+    <Compile Include="Types\Core\Suspendable.cs" />
+    <Compile Include="Types\Core\Usage.cs" />
+    <Compile Include="Types\Core\User.cs" />
+    <Compile Include="Types\Core\UserService.cs" />
+    <Compile Include="Types\DNS\DNSRecord.cs" />
+    <Compile Include="Types\DNS\DNSRecordA.cs" />
+    <Compile Include="Types\DNS\DNSRecordAAAA.cs" />
+    <Compile Include="Types\DNS\DNSRecordCNAME.cs" />
+    <Compile Include="Types\DNS\DNSRecordMX.cs" />
+    <Compile Include="Types\DNS\DNSRecordNS.cs" />
+    <Compile Include="Types\DNS\DNSRecordSRV.cs" />
+    <Compile Include="Types\DNS\DNSRecordTXT.cs" />
+    <Compile Include="Types\DNS\DNSZone.cs" />
+    <Compile Include="Types\DNS\Domain.cs" />
+    <Compile Include="Types\DNS\DomainService.cs" />
+    <Compile Include="Types\DNS\HostedDomain.cs" />
+    <Compile Include="Types\Engines\PHP.cs" />
+    <Compile Include="Types\Infrastructure\CPU.cs" />
+    <Compile Include="Types\Infrastructure\Database.cs" />
+    <Compile Include="Types\Infrastructure\Directory.cs" />
+    <Compile Include="Types\Infrastructure\Environment.cs" />
+    <Compile Include="Types\Infrastructure\Handler.cs" />
+    <Compile Include="Types\Infrastructure\Hardware.cs" />
+    <Compile Include="Types\Infrastructure\IPAddress.cs" />
+    <Compile Include="Types\Infrastructure\MSSQL.cs" />
+    <Compile Include="Types\Infrastructure\MySQL.cs" />
+    <Compile Include="Types\Infrastructure\OS.cs" />
+    <Compile Include="Types\Infrastructure\Php.cs" />
+    <Compile Include="Types\Infrastructure\PhpEnvironment.cs" />
+    <Compile Include="Types\Infrastructure\Platform.cs" />
+    <Compile Include="Types\Infrastructure\PostgreSQL.cs" />
+    <Compile Include="Types\Infrastructure\SystemEnvironment.cs" />
+    <Compile Include="Types\Infrastructure\WebEnvironment.cs" />
+    <Compile Include="Types\Mail\ArchiveTarget.cs" />
+    <Compile Include="Types\Mail\Mailbox.cs" />
+    <Compile Include="Types\Mail\MailboxArchiving.cs" />
+    <Compile Include="Types\Mail\MailContact.cs" />
+    <Compile Include="Types\Mail\MailList.cs" />
+    <Compile Include="Types\Mail\MailRecipient.cs" />
+    <Compile Include="Types\Mail\SharedMailbox.cs" />
+    <Compile Include="Types\Mail\SMTPRelay.cs" />
+    <Compile Include="Types\Mail\Socket.cs" />
+    <Compile Include="Types\Web\SSL.cs" />
+    <Compile Include="Types\Web\User.cs" />
+    <Compile Include="Types\Web\Website.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\APS.CSharp.SDK\APS.CSharp.SDK.csproj">
       <Project>{ce1933d7-0523-491b-bd8c-344a0321570f}</Project>
       <Name>APS.CSharp.SDK</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="schemas\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

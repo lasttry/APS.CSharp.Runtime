@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -73,7 +74,7 @@ namespace APS.CSharp.SDK
         /// https://doc.apsstandard.org/2.1/spec/api/application/instance-operations/#spec-api-application-resource-put
         /// </summary>
         /// <param name="resource"></param>
-        void UpdateResource(ResourceBase resource);
+        T UpdateResource<T>(T resource);
 
         /// <summary>
         /// changing properties of the specified resource via the APS controller
@@ -87,7 +88,7 @@ namespace APS.CSharp.SDK
         /// https://doc.apsstandard.org/2.1/spec/api/resources/post/#spec-api-resource-post
         /// </summary>
         /// <param name="resource"></param>
-        void ProvisionResource(ResourceBase resource);
+        T ProvisionResource<T>(T resource);
 
         /// <summary>
         /// Removes link linkName from resource1 to resource2
@@ -176,5 +177,11 @@ namespace APS.CSharp.SDK
         /// <param name="path"></param>
         /// <returns></returns>
         object GetResources(string rqlFilter, string path);
+
+        string SendRequest(string path, HttpMethod method, object postContent = null, string contentType = "application/json", string impersonate = null);
+
+        string ConvertObject2Json(object obj);
+
+        T ConvertJson2Object<T>(string json);
     }
 }

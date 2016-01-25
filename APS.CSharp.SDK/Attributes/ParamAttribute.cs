@@ -6,7 +6,9 @@ namespace APS.CSharp.SDK.Attributes
     public class ParamAttribute : Attribute
     {
         public string Name { get; set; }
-        public ParamSource Source { get; set; }
+        public ParamSource Kind { get; set; }
         public Type Type { get; set; }
+
+        public bool Required { get; set; }
     }
 }

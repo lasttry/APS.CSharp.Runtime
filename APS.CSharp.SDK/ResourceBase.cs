@@ -89,7 +89,7 @@ namespace APS.CSharp.SDK
         public virtual void Retrieve() { }
         public virtual void Provision() { }
         public virtual void ProvisionAsync() { }
-        public virtual void Configure() { }
+        public virtual void Configure<T>(T _new) { }
         public virtual void Unprovision() { }
 
         public void ToXml()

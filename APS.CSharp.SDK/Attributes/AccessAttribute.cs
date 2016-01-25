@@ -9,7 +9,7 @@ namespace APS.CSharp.SDK.Attributes
     /// Default: {“admin”: true, “owner”: true, “referrer”: false, “public”: false}
     /// access allows or disallows access to the resource property when a user is either reading or changing the property.When a user attempts to read a not allowed property, the APS controller does not display the property in the output. If a user attempts to submit a value to a not allowed property, an error is returned.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
     public class AccessAttribute : Attribute
     {
         private bool _admin = true;

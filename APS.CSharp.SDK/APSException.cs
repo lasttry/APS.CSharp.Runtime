@@ -2,22 +2,32 @@
 
 namespace APS.CSharp.SDK
 {
-
+    /// <summary>
+    /// Specific Exception to handle the ASync methods of the endpoint.
+    /// </summary>
     public class APSAsync : APSException
     {
-        public APSAsync(int code, string message, int _timeout) : base(code, message)
+        public APSAsync(int code, string message, int timeout) : base(code, message)
         {
-            timeout = _timeout;
+            Timeout = timeout;
         }
-        public int timeout { get; set; }
+        public int Timeout { get; set; }
     }
     
+    /// <summary>
+    /// APS Specific Exception
+    /// All Libraries should use this class to expose the exception to the APSC
+    /// </summary>
     public class APSException : Exception
     {
         public int Code { get; set; }
         public string Error { get; set; }
         public string Details { get; set; }
         public string AdditionalInfo { get; set; }
+
+        public APSException() : base("An Unknown Exception Has Occurred") { }
+
+        public APSException(string message, APSException innerException) : base(message, innerException) { }
 
         public APSException(string message): base(message)
         {

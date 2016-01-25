@@ -127,9 +127,9 @@ namespace APS.CSharp.Runtime
                 if (contents.aps.x509 != null)
                 {
                     DataAccess.BindingAdd(
-                        (string)context.Request.Headers["APS-Instance-ID"],
+                        (string)context.Request.Headers[APSCHeaders.APSInstanceId],
                         (string)contents.aps.type,
-                        (string)context.Request.Headers["APS-Controller-URI"],
+                        (string)context.Request.Headers[APSCHeaders.APSControllerUri],
                         (string)contents.aps.x509.self,
                         (string)contents.aps.x509.controller);
                 }
@@ -147,10 +147,12 @@ namespace APS.CSharp.Runtime
                 {
                     Trace.TraceWarning("IHttpHandler.ProcessRequest.DGB-If we reached this far, means we have nothing to serve.");
                     Trace.TraceError(JsonConvert.SerializeObject(errorDetails));
+
+                    // we are setting one async operation
                     if(errorDetails.GetType() == typeof(APSAsync))
                     {
                         // Let's set the headers for the async provisioning back to the APSC
-                        context.Response.Headers.Add("APS-Retry-Timeout", ((APSAsync)errorDetails).timeout.ToString());
+                        context.Response.Headers.Add("APS-Retry-Timeout", ((APSAsync)errorDetails).Timeout.ToString());
                         context.Response.Headers.Add("APS-Info", ((APSAsync)errorDetails).Message);
                     }
                     else

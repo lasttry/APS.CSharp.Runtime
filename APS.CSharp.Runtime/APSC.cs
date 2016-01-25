@@ -8,6 +8,7 @@ using System.Web;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace APS.CSharp.Runtime
 {
@@ -15,7 +16,16 @@ namespace APS.CSharp.Runtime
     {
         public APSC(HttpRequest request)
         {
-            _request = request;
+            if (request == null)
+                _request = HttpContext.Current.Request;
+            else
+                _request = request;
+
+            // If the Instance ID header is not present throw exception.
+            if (string.IsNullOrEmpty(Request.Headers[APSCHeaders.APSInstanceId]))
+                throw new APSException(500, "The header {0} is not present in the request. Unable to retrieve the instance id.", APSCHeaders.APSInstanceId);
+
+            InstanceId = Request.Headers[APSCHeaders.APSInstanceId];
         }
         private HttpRequest _request;
         private HttpRequest Request { get { return _request; } }
@@ -23,17 +33,6 @@ namespace APS.CSharp.Runtime
         internal int Timeout = 300;
 
         public string InstanceId { get; set; }
-
-        const string APS_CONTROLLER_URI = "APS-Controller-URI";
-        const string APS_SESSION = "APS-Transaction-ID";
-        const string APS_RESOURCE_ID = "APS-Resource-ID";
-        const string APS_REQUEST_ID = "APS-Request-ID";
-        const string APS_TOKEN = "APS-Token";
-        const string APS_INSTANCE_ID = "APS-Instance-ID";
-        const string APS_TRANSACTION_ID = "APS-Transaction-ID";
-
-        // needs to start with / or the virtualpathutility will throw exception
-        const string APSC_RESOURCEPATH = "/aps/2/resources/";
 
         public void Subscriptions(ResourceBase resource)
         {
@@ -74,22 +73,36 @@ namespace APS.CSharp.Runtime
         }
         public void ConfigureResource(ResourceBase resource)
         {
-
+            //SendRequest()
         }
-        public void UpdateResource(ResourceBase resource)
+        public T UpdateResource<T>(T resource)
         {
+            // we need to get the property of the APS since we are working with T object.
+            PropertyInfo apsProperty = resource.GetType().GetProperty("APS");
+            if (apsProperty == null)
+                // Doesn't contain the APS part of the object, so it doesn't implemnete the resourcebase object.
+                throw new Exception("Object resource doesn't contain property APS. is it a ResourceBase object?");
+            SDK.APS aps = apsProperty.GetValue(resource) as APS.CSharp.SDK.APS;
+            string id = aps.Id;
+            // Get the type name so we can use in the path, no need to use 
+            string service = resource.GetType().Name;
 
+            string path = APSCPaths.BuildApplicationPath(service, id);
+
+            string updatedResource = SendRequest(path, HttpMethod.Put, Helper.Resource2Json(resource));
+
+            return JsonConvert.DeserializeObject<T>(updatedResource);
         }
-        public void ProvisionResource(ResourceBase resource)
+        public T ProvisionResource<T>(T resource)
         {
-            string path = APSC_RESOURCEPATH;
+            string createdResource = SendRequest(APSCPaths.ResourcePath, HttpMethod.Post, Helper.Resource2Json(resource));
 
-            SendRequest(path, HttpMethod.Post, Helper.Resource2Json(resource));
+            return JsonConvert.DeserializeObject<T>(createdResource);
         }
 
         public void UnlinkResource(ResourceBase resource, string relationName, ResourceBase linkResource)
         {
-            string linkPath = Helper.CombinePath(APSC_RESOURCEPATH, resource.APS.Id, relationName, linkResource.APS.Id);
+            string linkPath = APSCPaths.BuildResourcePath(APSCPaths.ResourcePath, resource.APS.Id, relationName, linkResource.APS.Id);
             
             SendRequest(linkPath, HttpMethod.Delete);
         }
@@ -109,7 +122,7 @@ namespace APS.CSharp.Runtime
         {
             string post = JsonConvert.SerializeObject(new { aps = new { id = linkResource.APS.Id } });
 
-            return JsonConvert.DeserializeObject<T>(SendRequest(VirtualPathUtility.Combine(VirtualPathUtility.Combine(APSC_RESOURCEPATH, resource.APS.Id), relationName), HttpMethod.Post, post));
+            return JsonConvert.DeserializeObject<T>(SendRequest(APSCPaths.BuildResourcePath(resource.APS.Id, relationName), HttpMethod.Post, post));
         }
         public ResourceBase LinkResource(ResourceBase resource, string relationName, ResourceBase linkResource)
         {
@@ -125,7 +138,12 @@ namespace APS.CSharp.Runtime
         }
         public ResourceBase LinkResource(string resourceId, string relationName, string linkResourceId)
         {
-            return LinkResource(new ResourceBase() { APS = new SDK.APS { Id = resourceId } }, relationName, new ResourceBase() { APS = new SDK.APS { Id = linkResourceId } });
+            return LinkResource(
+                new ResourceBase() {
+                    APS = new SDK.APS { Id = resourceId } }, 
+                relationName, 
+                new ResourceBase() {
+                    APS = new SDK.APS { Id = linkResourceId } });
         }
 
         public ResourceBase GetResource(string id)  
@@ -137,7 +155,7 @@ namespace APS.CSharp.Runtime
         {
             string resource = "";
 
-            resource = SendRequest(VirtualPathUtility.Combine(APSC_RESOURCEPATH, id), HttpMethod.Get);
+            resource = SendRequest(APSCPaths.BuildResourcePath(id), HttpMethod.Get);
 
             return JsonConvert.DeserializeObject<T>(resource);
         }
@@ -145,7 +163,7 @@ namespace APS.CSharp.Runtime
         public object GetResources(string rqlFilter, string path)
         {
             if (String.IsNullOrEmpty(path))
-                path = APSC_RESOURCEPATH;
+                path = APSCPaths.ResourcePath;
             string resources = "";
             resources = SendRequest(path, HttpMethod.Get);
                 //throw new Exception("Failed to retrieve the resources from the APSC.");
@@ -171,7 +189,7 @@ namespace APS.CSharp.Runtime
         /// <param name="path">The path to use</param>
         /// <param name="content">The result content</param>
         /// <returns>true if request is success</returns>
-        internal string SendRequest(string path, HttpMethod method, string postContent = "", string contentType = "application/json")
+        public string SendRequest(string path, HttpMethod method, object postContent = null, string contentType = "application/json", string impersonate = null)
         {
             string content = String.Empty;
 
@@ -199,28 +217,36 @@ namespace APS.CSharp.Runtime
 
                     HttpRequestMessage apscRequest = new HttpRequestMessage(method, path);
                     
-                    apscRequest.Headers.Add(APS_INSTANCE_ID, Binding.InstanceId);
-                    apscRequest.Headers.Add(APS_CONTROLLER_URI, Request.Url.Host);
+                    apscRequest.Headers.Add(APSCHeaders.APSInstanceId, Binding.InstanceId);
+                    apscRequest.Headers.Add(APSCHeaders.APSControllerUri, Request.Url.Host);
                     
                     apscRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
 
                     // this should only be sent if we have some content
                     if(method != HttpMethod.Post || method != HttpMethod.Put)
                     {
-                        apscRequest.Content = new StringContent(postContent);
-                        apscRequest.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                        if (postContent.GetType() == typeof(string))
+                            apscRequest.Content = new StringContent((string)postContent);
+                        else if(postContent.GetType() == typeof(List<KeyValuePair<string, string>>))
+                            apscRequest.Content = new FormUrlEncodedContent((List<KeyValuePair<string, string>>)postContent);
 
+                        apscRequest.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                     }
 
                     //GetSession
-                    if (Request.Headers.Get(APS_TRANSACTION_ID) != null)
-                        apscRequest.Headers.Add(APS_SESSION, Request.Headers.Get(APS_TRANSACTION_ID));
+                    if (Request.Headers.Get(APSCHeaders.APSTransactionId) != null)
+                        apscRequest.Headers.Add(APSCHeaders.APSSession, Request.Headers.Get(APSCHeaders.APSTransactionId));
                     //GetToken
                     //TODO: Check what is token and apply it
                     //if ()
                     //    apscRequest.Headers.Add(APS_TOKEN, );
-                        
+
                     //apscRequest.Method = method;
+
+                    // if the impersonate object has information we need to impersonate
+                    // for that we send the APS-Resource-ID header with the id of the resource we want to impersonate
+                    if(!string.IsNullOrEmpty(impersonate))
+                        apscRequest.Headers.Add(APSCHeaders.APSResourceId, impersonate);
 
                     // send the request to the APSC
                     response = apscclient.SendAsync(apscRequest).Result;
@@ -243,6 +269,16 @@ namespace APS.CSharp.Runtime
                     throw new APSException((int)response.StatusCode, response.ReasonPhrase);
             }
             return content;
+        }
+
+        public string ConvertObject2Json(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public T ConvertJson2Object<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }
