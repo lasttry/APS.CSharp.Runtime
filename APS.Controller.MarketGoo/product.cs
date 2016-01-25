@@ -14,8 +14,10 @@ namespace APS.Controller.MarketGoo
         
         public override void Provision()
         {
-            throw new APSAsync(202, "Accepted", 60);
+            CSharp.SDK.Types.Core.Resource r = new CSharp.SDK.Types.Core.Resource();
+            r.Provision();
             return;
+
             product p = new product();
             APSC.ProvisionResource(p);
 
