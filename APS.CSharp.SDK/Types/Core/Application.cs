@@ -9,7 +9,7 @@ namespace APS.CSharp.SDK.Types.Core
     /// If an application instance must be installed in a certain environment, the resource may require one of environment types.In this case, for every new application instance, a new environment has to be created.
        /// </summary>
     [ResourceBase(Id = "http://aps-standard.org/types/core/application/1.0")]
-    public class Application : Resource
+    public class Application : ResourceBase
     {
 
         [Operation(Verb = HttpVerbs.POST, Path = "/upgrade")]

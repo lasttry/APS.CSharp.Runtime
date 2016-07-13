@@ -8,7 +8,7 @@ namespace APS.CSharp.SDK.Types.Core
     /// The Resource type is the base type for any resource operations.
     /// </summary>
     [ResourceBase("http://aps-standard.org/types/core/resource/1.0")]
-    public class Resource
+    public class Resource : ResourceBase
     {
         [Operation(Name = "provision", Verb = HttpVerbs.POST, Path = "/", Static = true)]
         [Access(Admin = true, Owner = true, Referrer = false)]

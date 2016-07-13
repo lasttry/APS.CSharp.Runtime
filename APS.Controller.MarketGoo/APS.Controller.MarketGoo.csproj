@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="applications.cs">
       <Generator>APSSchemaGenerator</Generator>
+      <LastGenOutput>applications.gen.schema</LastGenOutput>
     </Compile>
     <Compile Include="product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,6 +121,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="schemas\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="applications.gen.schema">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>applications.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -225,6 +225,8 @@ namespace APS.CSharp.Runtime
                     // this should only be sent if we have some content
                     if(method != HttpMethod.Post || method != HttpMethod.Put)
                     {
+                        if (postContent == null)
+                            throw new APSException("Invalid post content for APSController sent.");
                         if (postContent.GetType() == typeof(string))
                             apscRequest.Content = new StringContent((string)postContent);
                         else if(postContent.GetType() == typeof(List<KeyValuePair<string, string>>))

@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.CSharp.Runtime", "APS.CSharp.Runtime\APS.CSharp.Runtime.csproj", "{EE0AB2E3-D826-4B9C-866D-1692F60B0374}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "APS.CSharp.Site", "APS.CSharp.Site\", "{5CD097A3-E745-4DD1-AF9F-B24372BA86B8}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
-		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;{71ff1bba-9feb-4897-848b-91439fcff507}|APS.Controller.MarketGoo.dll;{CE1933D7-0523-491B-BD8C-344A0321570F}|APS.CSharp.SDK.dll;{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}|APS.CSharp.Common.dll;"
+		ProjectReferences = "{ee0ab2e3-d826-4b9c-866d-1692f60b0374}|APS.CSharp.Runtime.dll;{71ff1bba-9feb-4897-848b-91439fcff507}|APS.Controller.MarketGoo.dll;{CE1933D7-0523-491B-BD8C-344A0321570F}|APS.CSharp.SDK.dll;{3FBFAB28-138F-41AD-A41C-DFAFDB4DFF95}|APS.CSharp.Common.dll;{eaa7a4de-8b9c-485b-8af7-26db3f6893fa}|APS.Controller.IISManagement.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56629"
 		Debug.AspNetCompiler.PhysicalPath = "APS.CSharp.Site\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56629\"
@@ -42,6 +42,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.CSharp.VisualStudio", "APS.CSharp.VisualStudio\APS.CSharp.VisualStudio.csproj", "{8CE8F6F4-1F52-4FEB-ABF4-AC8647312691}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.CSharp.VSPlugin", "..\APS.CSharp.VSPlugin\APS.CSharp.VSPlugin\APS.CSharp.VSPlugin.csproj", "{4E281595-BBDB-4B8D-B7D8-F3C970204B92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.CSharp", "..\APS.CSharp.VSPlugin\APS.CSharp\APS.CSharp.csproj", "{0ED1F273-A6F9-4165-B0CC-0B18C9D94C6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS.Controller.IISManagement", "APS.Controller.IISManagement\APS.Controller.IISManagement.csproj", "{EAA7A4DE-8B9C-485B-8AF7-26DB3F6893FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +81,14 @@ Global
 		{4E281595-BBDB-4B8D-B7D8-F3C970204B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E281595-BBDB-4B8D-B7D8-F3C970204B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E281595-BBDB-4B8D-B7D8-F3C970204B92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED1F273-A6F9-4165-B0CC-0B18C9D94C6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED1F273-A6F9-4165-B0CC-0B18C9D94C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED1F273-A6F9-4165-B0CC-0B18C9D94C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED1F273-A6F9-4165-B0CC-0B18C9D94C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAA7A4DE-8B9C-485B-8AF7-26DB3F6893FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA7A4DE-8B9C-485B-8AF7-26DB3F6893FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA7A4DE-8B9C-485B-8AF7-26DB3F6893FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA7A4DE-8B9C-485B-8AF7-26DB3F6893FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

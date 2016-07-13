@@ -12,6 +12,7 @@ namespace APS.CSharp.Runtime
     /// </summary>
     public class DataAccess
     {
+        internal static string SQLiteFolder = "Data";
         internal static string SQLiteName = "APS.CSharp.sqlite";
         internal static string SQLiteLogTable = "APS.CSharp.Runtime.SQLiteScripts.v1_0.logs.sql";
         internal static string SQLiteDatabase = "APS.CSharp.Runtime.SQLiteScripts.v1_0.database.sql";
@@ -22,7 +23,11 @@ namespace APS.CSharp.Runtime
         /// <returns></returns>
         public static SQLiteConnection Connection()
         {
-            string databaseFile = Path.Combine(HttpRuntime.AppDomainAppPath, SQLiteName);
+            string databasePath = Path.Combine(HttpRuntime.AppDomainAppPath, SQLiteFolder);
+            if (!System.IO.Directory.Exists(databasePath))
+                System.IO.Directory.CreateDirectory(databasePath);
+
+            string databaseFile = Path.Combine(databasePath, SQLiteName);
             SQLiteConnection connection = new SQLiteConnection(databaseFile);
 
             connection.CreateTable<Database.Request>();
@@ -147,6 +152,8 @@ namespace APS.CSharp.Runtime
             {
                 var controller = conn.Table<Database.Bindings>().Where(i => i.InstanceId == instanceId);
                 if (controller == null)
+                    return null;
+                else if (controller.Count() == 0)
                     return null;
                 return controller.First();
             }

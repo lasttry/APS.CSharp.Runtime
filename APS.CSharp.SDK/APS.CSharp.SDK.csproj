@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APSLink.cs" />
     <Compile Include="APSSchemaGenerator.cs" />
     <Compile Include="Attributes\AllocateEnum.cs" />
     <Compile Include="Attributes\RelationAttribute.cs" />
@@ -55,7 +56,6 @@
     <Compile Include="APSCHeaders.cs" />
     <Compile Include="APSCPaths.cs" />
     <Compile Include="Attributes\AccessAttribute.cs" />
-    <Compile Include="Attributes\LinkAttribute.cs" />
     <Compile Include="Attributes\OperationAttribute.cs" />
     <Compile Include="Attributes\ParamAttribute.cs" />
     <Compile Include="Attributes\PropertyAttribute.cs" />
@@ -69,6 +69,7 @@
     <Compile Include="ResourceBase.cs" />
     <Compile Include="Types\Core\AdminUser.cs" />
     <Compile Include="Types\Core\Application.cs" />
+    <Compile Include="Types\Core\APSElement.cs" />
     <Compile Include="Types\Core\Backupable.cs" />
     <Compile Include="Types\Core\Brand.cs" />
     <Compile Include="Types\Core\BrandConfiguration.cs" />

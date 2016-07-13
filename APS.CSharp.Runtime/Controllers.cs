@@ -22,7 +22,7 @@ namespace APS.CSharp.Runtime
         public static List<Controller> GetControllers()
         {
             // Define the type of the resource we are looking for
-            var type = typeof(ResourceBase);
+            var type = typeof(APS.CSharp.SDK.Types.Core.Application);
             // Get all the current assemblies with the define interface
             var types = AppDomain.CurrentDomain.GetAssemblies().ToList()
                 .SelectMany(a => a.GetTypes())
@@ -188,8 +188,9 @@ namespace APS.CSharp.Runtime
             {
                 // let's get the type of the resource we are going to work with.
                 string apsExpectedType = "";
-                if (string.IsNullOrEmpty(actionOrLink))
-                    apsExpectedType = contents.aps.type;
+                // For a delete of a resource there is no apsExpectedType we need only to use the name to get the type
+                if (contents != null && string.IsNullOrEmpty(actionOrLink))
+                        apsExpectedType = contents.aps.type;
                 currentType = GetResourceByType(currentController, resourceName, apsExpectedType);
             }
             catch (Exception e)

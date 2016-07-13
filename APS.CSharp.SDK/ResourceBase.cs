@@ -9,6 +9,11 @@ using System.Reflection;
 
 namespace APS.CSharp.SDK
 {
+    public class CertificateElement
+    {
+        public string Self { get; set; }
+        public string Controller { get; set; }
+    }
     public class Package
     {
         public string Id { get; set; }
@@ -23,6 +28,7 @@ namespace APS.CSharp.SDK
         public int Revision { get; set; }
         public DateTime Modified { get; set; }
         public Package Package { get; set; }
+        public CertificateElement X509 { get; set; }
     }
 
     /// <summary>
